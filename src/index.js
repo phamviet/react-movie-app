@@ -9,7 +9,7 @@ import blue from 'material-ui/colors/blue';
 import App from './App';
 import Auth from './Auth';
 import Client from './Client';
-import { API_ENDPOINT } from './config'
+import { API_ENDPOINT, API_CLIENT_ID, API_CLIENT_SECRET } from './config'
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 
@@ -22,7 +22,7 @@ const theme = createMuiTheme({
 const history = createHistory({
   forceRefresh: true
 })
-const client = new Client(API_ENDPOINT)
+const client = new Client(API_ENDPOINT, API_CLIENT_ID, API_CLIENT_SECRET)
 const auth = new Auth();
 auth.addListener('authenticated', function () {
   history.replace('/')

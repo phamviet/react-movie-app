@@ -2,9 +2,11 @@ import { EventEmitter } from 'fbemitter';
 import qs from 'qs';
 
 class Client extends EventEmitter {
-  constructor(apiEndpoint) {
+  constructor(endpoint, clientId, clientSecret) {
     super()
-    this.endpoint = apiEndpoint
+    this.endpoint = endpoint
+    this.clientId = clientId
+    this.clientSecret = clientSecret
   }
 
   async request(path, options = {}) {
@@ -14,6 +16,8 @@ class Client extends EventEmitter {
       ...options,
       headers: {
         'content-type': 'application/json',
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
         ...(options.headers || {})
       }
     })
