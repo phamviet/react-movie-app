@@ -72,7 +72,11 @@ if ((!initializing && !auth.isAuthenticated())) {
             .then(profile => {
               this.setState({ profile })
             })
-            .catch(console.error)
+            .catch(function (err) {
+              console.error(err)
+              auth.logout()
+              auth.login()
+            })
         }
       },
       componentWillUnmount() {
