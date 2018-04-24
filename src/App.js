@@ -7,14 +7,25 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import Icon from 'material-ui/Icon'
 import { LinearProgress } from 'material-ui/Progress';
 
-import { TabContainer, DiscoverScreen, LibraryScreen } from './screens'
+import { TabContainer, DiscoverScreenWithData, LibraryScreenWithData } from './screens'
 import Client from './Client'
 import { MovieDialog } from './components'
 
-const screens = [DiscoverScreen, LibraryScreen]
+const screens = [
+  {
+    label: 'Discover',
+    screen: DiscoverScreenWithData,
+    icon: 'home'
+  },
+  {
+    label: 'Library',
+    screen: LibraryScreenWithData,
+    icon: 'favorite'
+  }
+]
 
 function renderTabs(index, props = {}) {
-  return React.createElement(screens[index], props)
+  return React.createElement(screens[index]['screen'], props)
 }
 
 function executeLibraryAction({ client, profile }, name, item) {
@@ -42,6 +53,12 @@ class App extends Component {
     return executeLibraryAction(this.props, 'existInLibrary', item)
   }
 
+  renderScreen = ({ label, icon }, index) => {
+    return (
+      <Tab disabled={this.props.busy} icon={<Icon>{icon}</Icon>} label={label} key={index} value={index}/>
+    )
+  }
+
   renderProgress() {
     return (
       <div className={this.props.classes.progress}>
@@ -61,8 +78,7 @@ class App extends Component {
       <div className={classes.root}>
         <AppBar position="fixed">
           <Tabs centered value={tabValue} onChange={this.handleTabChange}>
-            <Tab disabled={busy} icon={<Icon>home</Icon>} label="Discover"/>
-            <Tab disabled={busy} icon={<Icon>favorite</Icon>} label="Library"/>
+            {screens.map(this.renderScreen)}
           </Tabs>
         </AppBar>
         <MovieDialog
@@ -105,5 +121,5 @@ const styles = theme => ({
 });
 
 export default compose(
-  withStyles(styles))
-(App);
+  withStyles(styles)
+)(App);

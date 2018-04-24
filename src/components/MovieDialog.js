@@ -71,5 +71,5 @@ const styles = () => ({
 export const MovieDialog = compose(
   // https://github.com/acdlite/recompose/blob/master/docs/API.md#lifecycle
   withMobileDialog({ breakpoint: 'md' }),
-  withStyles(styles))
-(MovieDialogComponent);
+  withStyles(styles)
+)(MovieDialogComponent);

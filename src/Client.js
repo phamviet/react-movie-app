@@ -23,12 +23,19 @@ class Client extends EventEmitter {
     })
 
     this.emit('response', res)
+    if (!res.ok) {
+      return null
+    }
 
     return res.json()
   }
 
-  async discover() {
+  discover() {
     return this.request('/discover/movie')
+  }
+
+  libraries(user_id) {
+    return this.request('/library/list?' + qs.stringify({ user_id }))
   }
 
   addLibrary({ user_id, movie_id }) {
@@ -39,12 +46,12 @@ class Client extends EventEmitter {
   }
 
   removeLibrary({ user_id, movie_id }) {
-    return this.request('/library/delete' + qs.stringify({ user_id, movie_id }), {
+    return this.request('/library/delete?' + qs.stringify({ user_id, movie_id }), {
       method: 'DELETE',
     })
   }
   existInLibrary({ user_id, movie_id }) {
-    return this.request('/library/has' + qs.stringify({ user_id, movie_id }), {
+    return this.request('/library/has?' + qs.stringify({ user_id, movie_id }), {
       method: 'GET',
     })
   }

@@ -1,36 +1,33 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { compose, lifecycle } from 'recompose';
 
 import { GridMovies } from '../components'
 
-export class DiscoverScreen extends Component {
-  state = {
-    data: [],
-  }
-
-  componentDidMount() {
-    const { client } = this.props
-    client.discover()
-      .then(data => {
-        this.setState({ data: data.results })
-      })
-      .catch(console.error)
-  }
-
-  render() {
-    const { showDialog } = this.props;
-
-    return (
-      <div>
-        <GridMovies
-          data={this.state.data}
-          onClick={showDialog}
-        />
-      </div>
-    )
-  }
-}
+export const DiscoverScreen = ({ data, showDialog }) => (
+  <GridMovies
+    data={data}
+    onClick={showDialog}
+  />
+)
 
 DiscoverScreen.propTypes = {
-  client: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
 }
+
+DiscoverScreen.defaultProps = {
+  data: [],
+}
+
+export const DiscoverScreenWithData = compose(
+  lifecycle({
+    componentDidMount() {
+      const { client } = this.props
+      client.discover()
+        .then(data => {
+          this.setState({ data: data.results || [] })
+        })
+        .catch(console.error)
+    }
+  })
+)(DiscoverScreen)
