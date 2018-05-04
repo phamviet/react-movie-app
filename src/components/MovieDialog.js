@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { compose } from 'recompose';
+import { compose, lifecycle } from 'recompose';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
@@ -13,7 +13,7 @@ import Dialog, {
   withMobileDialog,
 } from 'material-ui/Dialog';
 
-export function MovieDialogComponent({ item, disabled, fullScreen, classes, onAddLibrary, onInLibraryCheck, onRemoveLibrary, onClose, ...props }) {
+export function MovieDialogComponent({ item, disabled, fullScreen, classes, onAddLibrary, inLibrary, inLibraryCheck, onRemoveLibrary, onClose, ...props }) {
 
   return (
     <Dialog
@@ -40,9 +40,13 @@ export function MovieDialogComponent({ item, disabled, fullScreen, classes, onAd
               <Typography gutterBottom color="inherit" variant="display1">{item ? item.name : ''}</Typography>
               <DialogContentText>{item.overview}</DialogContentText>
               <DialogActions>
-                <Button disabled={disabled} onClick={() => onAddLibrary(item)} color="primary">
-                  Add Library
-                </Button>
+                {!!inLibrary ?
+                  <Button disabled={disabled} onClick={() => onRemoveLibrary(item)} color="primary">
+                    Remove Library
+                  </Button> :
+                  <Button disabled={disabled} onClick={() => onAddLibrary(item)} color="primary">
+                    Add Library
+                  </Button>}
               </DialogActions>
             </Grid>
           </Grid>
@@ -64,12 +68,25 @@ MovieDialogComponent.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
 };
 
-const styles = () => ({
-
-});
-
+const styles = () => ({});
 export const MovieDialog = compose(
   // https://github.com/acdlite/recompose/blob/master/docs/API.md#lifecycle
   withMobileDialog({ breakpoint: 'md' }),
-  withStyles(styles)
+  withStyles(styles),
+  lifecycle({
+    componentDidMount() {
+      const { item, open, inLibraryCheck } = this.props
+
+      if (!item || !open) {
+        return;
+      }
+
+      inLibraryCheck(item)
+        .then(({ exist }) => {
+          this.setState(() => {
+            return { inLibrary: exist }
+          })
+        })
+    }
+  })
 )(MovieDialogComponent);

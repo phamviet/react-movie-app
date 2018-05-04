@@ -68,7 +68,7 @@ class App extends Component {
   }
 
   render() {
-    const { classes, busy, initializing, dialog, viewing, hideDialog, ...screenProps } = this.props;
+    const { classes, busy, initializing, dialog, viewing, onDialogClose, onDialogExited, ...screenProps } = this.props;
     const { tabValue } = this.state;
     if (initializing) {
       return this.renderProgress()
@@ -81,15 +81,16 @@ class App extends Component {
             {screens.map(this.renderScreen)}
           </Tabs>
         </AppBar>
-        <MovieDialog
+        {dialog !== null && <MovieDialog
           open={dialog}
           item={viewing}
           disabled={busy}
-          onClose={hideDialog}
+          onClose={onDialogClose}
+          onExited={onDialogExited}
           onAddLibrary={this.handleAddLibrary}
           onRemoveLibrary={this.handleRemoveLibrary}
-          onInLibraryCheck={this.handleInLibraryCheck}
-        />
+          inLibraryCheck={this.handleInLibraryCheck}
+        />}
         <TabContainer>{renderTabs(tabValue, { ...screenProps, busy })}</TabContainer>
         {busy && this.renderProgress()}
       </div>

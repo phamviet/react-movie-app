@@ -51,7 +51,7 @@ class Client extends EventEmitter {
     })
   }
   existInLibrary({ user_id, movie_id }) {
-    return this.request('/library/has?' + qs.stringify({ user_id, movie_id }), {
+    return this.request('/library/check?' + qs.stringify({ user_id, movie_id }), {
       method: 'GET',
     })
   }

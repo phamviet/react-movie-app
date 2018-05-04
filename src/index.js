@@ -45,15 +45,18 @@ if ((!initializing && !auth.isAuthenticated())) {
     withStateHandlers(
       {
         viewing: null,
-        dialog: false,
+        dialog: null,
       },
       {
         showDialog: () => item => ({
           viewing: item,
           dialog: true
         }),
-        hideDialog: () => () => ({
-          dialog: false
+        onDialogClose: () => () => ({
+          dialog: false,
+        }),
+        onDialogExited: () => () => ({
+          dialog: null,
         }),
       }
     ),
